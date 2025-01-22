@@ -33,6 +33,7 @@
 
       // Проверяем, что все поля заполнены
       if (firstName && lastName && email) {
+        console.log("Поля успешно заполнены: ", firstName, lastName, email); // Добавляем отладку
         try {
           // Добавляем данные в коллекцию "users"
           const docRef = await addDoc(collection(db, "users"), {
