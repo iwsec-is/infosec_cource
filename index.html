@@ -31,23 +31,17 @@
       const name = document.getElementById('name').value;
       const email = document.getElementById('email').value;
 
-      console.log("Name:", name, "Email:", email);  // Логируем значения
-
       if (name && email) {
         try {
-          // Логируем, что мы пытаемся добавить документ
-          console.log("Attempting to add document:", { name, email });
-
-          // Добавляем документ в коллекцию
+          // Add a new document with a generated ID
           const docRef = await addDoc(collection(db, "users"), {
             name: name,
             email: email
           });
-
-          console.log("Document written with ID: ", docRef.id);  // Логируем ID добавленного документа
+          console.log("Document written with ID: ", docRef.id);
           alert('Registration successful!');
         } catch (e) {
-          console.error("Error adding document: ", e);  // Логируем ошибку
+          console.error("Error adding document: ", e);
           alert('Error during registration');
         }
       } else {
