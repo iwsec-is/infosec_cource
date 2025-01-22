@@ -57,6 +57,12 @@
         alert('Пожалуйста, заполните все поля.');
       }
     }
+
+    // Ждем, когда весь документ загрузится
+    window.onload = function() {
+      const registerButton = document.getElementById("register-button");
+      registerButton.addEventListener("click", register);
+    }
   </script>
   <style>
     body {
@@ -102,7 +108,7 @@
   <input type="text" id="first-name" placeholder="Имя" class="button"><br><br>
   <input type="text" id="last-name" placeholder="Фамилия" class="button"><br><br>
   <input type="email" id="email" placeholder="Email" class="button"><br><br>
-  <button class="button" onclick="register()">Далее</button>
+  <button id="register-button" class="button">Далее</button>
 </div>
 
 </body>
