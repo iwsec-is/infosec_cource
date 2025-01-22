@@ -60,6 +60,7 @@
 
     // Ждем, когда весь документ загрузится
     window.onload = function() {
+      console.log("Страница загружена, привязываем обработчик к кнопке.");
       const registerButton = document.getElementById("register-button");
       registerButton.addEventListener("click", register);
     }
