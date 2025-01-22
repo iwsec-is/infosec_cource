@@ -108,7 +108,7 @@
         const email = document.getElementById('email').value;
 
         if (name && email) {
-            fetch('http://localhost/registration-form/register.php', {
+            fetch('http://212.58.114.104/infosec_cource/register.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ name: name, email: email }),
