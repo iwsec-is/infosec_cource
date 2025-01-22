@@ -3,14 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Animated Registration Page</title>
+  <title>Регистрация</title>
   <script type="module">
-    // Import the functions you need from the SDKs you need
+    // Импорт необходимых функций из SDK Firebase
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
-    import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-analytics.js";
     import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js"; 
 
-    // Your web app's Firebase configuration
+    // Конфигурация вашего веб-приложения Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyD0QXeu6sT7w6GfIbu-qgTv4eHlMlMLuf4",
       authDomain: "web-training-is.firebaseapp.com",
@@ -21,31 +20,34 @@
       measurementId: "G-XQ1K7B1CZF"
     };
 
-    // Initialize Firebase
+    // Инициализация Firebase
     const app = initializeApp(firebaseConfig);
-    const analytics = getAnalytics(app);
     const db = getFirestore(app);
 
-    // Function to handle registration form submission
+    // Функция для отправки данных в Firestore
     async function register() {
-      const name = document.getElementById('name').value;
+      // Получаем значения с формы
+      const firstName = document.getElementById('first-name').value;
+      const lastName = document.getElementById('last-name').value;
       const email = document.getElementById('email').value;
 
-      if (name && email) {
+      // Проверяем, что все поля заполнены
+      if (firstName && lastName && email) {
         try {
-          // Add a new document with a generated ID
+          // Добавляем данные в коллекцию "users"
           const docRef = await addDoc(collection(db, "users"), {
-            name: name,
+            firstName: firstName,
+            lastName: lastName,
             email: email
           });
-          console.log("Document written with ID: ", docRef.id);
-          alert('Registration successful!');
+          console.log("Документ записан с ID: ", docRef.id);
+          alert('Регистрация успешна!');
         } catch (e) {
-          console.error("Error adding document: ", e);
-          alert('Error during registration');
+          console.error("Ошибка при добавлении документа: ", e);
+          alert('Ошибка при регистрации');
         }
       } else {
-        alert('Please fill in all fields.');
+        alert('Пожалуйста, заполните все поля.');
       }
     }
   </script>
@@ -90,7 +92,8 @@
 
 <div id="registration" class="popup">
   <h2>Регистрация</h2>
-  <input type="text" id="name" placeholder="Имя Фамилия" class="button"><br><br>
+  <input type="text" id="first-name" placeholder="Имя" class="button"><br><br>
+  <input type="text" id="last-name" placeholder="Фамилия" class="button"><br><br>
   <input type="email" id="email" placeholder="Email" class="button"><br><br>
   <button class="button" onclick="register()">Далее</button>
 </div>
