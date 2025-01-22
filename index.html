@@ -5,11 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Регистрация</title>
   <script type="module">
-    // Импорт необходимых функций из SDK Firebase
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
     import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js"; 
 
-    // Конфигурация вашего веб-приложения Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyD0QXeu6sT7w6GfIbu-qgTv4eHlMlMLuf4",
       authDomain: "web-training-is.firebaseapp.com",
@@ -20,22 +18,18 @@
       measurementId: "G-XQ1K7B1CZF"
     };
 
-    // Инициализация Firebase
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // Функция для отправки данных в Firestore
     async function register() {
-      // Получаем значения с формы
       const firstName = document.getElementById('first-name').value;
       const lastName = document.getElementById('last-name').value;
       const email = document.getElementById('email').value;
 
-      // Проверяем, что все поля заполнены
       if (firstName && lastName && email) {
-        console.log("Поля успешно заполнены: ", firstName, lastName, email); // Добавляем отладку
+        console.log("Данные для отправки: ", firstName, lastName, email); // Отладка данных
+
         try {
-          // Добавляем данные в коллекцию "users"
           const docRef = await addDoc(collection(db, "users"), {
             firstName: firstName,
             lastName: lastName,
@@ -48,6 +42,7 @@
           alert('Ошибка при регистрации');
         }
       } else {
+        console.log("Ошибка: Не все поля заполнены"); // Логирование ошибки
         alert('Пожалуйста, заполните все поля.');
       }
     }
