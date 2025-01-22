@@ -5,10 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Регистрация</title>
   <script type="module">
+    // Импортируем необходимые функции из Firebase SDK
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
     import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js"; 
 
-    // Firebase конфигурация
+    // Конфигурация Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyD0QXeu6sT7w6GfIbu-qgTv4eHlMlMLuf4",
       authDomain: "web-training-is.firebaseapp.com",
@@ -23,30 +24,36 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // Функция регистрации
+    // Функция для отправки данных в Firestore
     async function register() {
+      // Получаем значения из формы
       const firstName = document.getElementById('first-name').value;
       const lastName = document.getElementById('last-name').value;
       const email = document.getElementById('email').value;
 
-      if (firstName && lastName && email) {
-        console.log("Данные для отправки: ", firstName, lastName, email); // Логирование данных
+      // Логируем введенные данные
+      console.log("Данные для отправки:", firstName, lastName, email);
 
+      // Проверка, что все поля заполнены
+      if (firstName && lastName && email) {
         try {
-          // Добавление документа в коллекцию
+          // Добавление данных в коллекцию "users"
           const docRef = await addDoc(collection(db, "users"), {
             firstName: firstName,
             lastName: lastName,
             email: email
           });
-          console.log("Документ записан с ID: ", docRef.id);
+
+          // Логируем успех
+          console.log("Документ успешно добавлен с ID: ", docRef.id);
           alert('Регистрация успешна!');
         } catch (e) {
+          // Логируем ошибку
           console.error("Ошибка при добавлении документа: ", e);
           alert('Ошибка при регистрации');
         }
       } else {
-        console.log("Ошибка: Не все поля заполнены"); // Логирование ошибки
+        // Если не все поля заполнены
         alert('Пожалуйста, заполните все поля.');
       }
     }
