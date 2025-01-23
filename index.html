@@ -3,252 +3,220 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Интерактивный курс</title>
+  <title>Интерактивный интерфейс</title>
   <style>
     body {
       margin: 0;
       padding: 0;
       background-color: #2e2e2e;
+      font-family: Arial, sans-serif;
+      color: white;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
-      color: white;
-      font-family: Arial, sans-serif;
-    }
-
-    .hidden {
-      display: none;
-    }
-
-    /* Главное окно */
-    .centered-container {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-      border-radius: 16px;
-      background-color: #3e3e3e;
-      padding: 20px;
-      max-width: 80%;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-    }
-
-    /* Окно с изображением */
-    .image-window {
-      width: 100%;
-      max-width: 600px;
-      position: relative;
-      border-radius: 16px;
       overflow: hidden;
+    }
+
+    .centered-container {
+      display: none;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
       background-color: #444;
+      border-radius: 15px;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .input-container input {
+      margin: 10px 0;
+      padding: 10px;
+      width: 80%;
+      border: none;
+      border-radius: 10px;
+    }
+
+    .image-window {
+      width: 300px;
+      height: 200px;
+      border-radius: 15px;
+      overflow: hidden;
     }
 
     .image-window img {
-      display: block;
       width: 100%;
-      height: auto;
+      height: 100%;
+      object-fit: cover;
     }
 
-    /* Кнопки на изображении */
-    .overlay-button {
-      position: absolute;
-      bottom: 10px;
-      padding: 8px 16px;
-      border: none;
-      border-radius: 8px;
-      background-color: rgba(255, 255, 255, 0.2);
-      color: white;
-      font-size: 14px;
-      cursor: pointer;
-      transition: background-color 0.3s;
-    }
-
-    .overlay-button:hover {
-      background-color: rgba(255, 255, 255, 0.4);
-    }
-
-    #start-button {
-      left: 10%;
-    }
-
-    #info-button {
-      right: 10%;
-    }
-
-    /* Выбор языка */
-    .language-selection {
-      display: flex;
-      justify-content: space-around;
-      width: 100%;
-      max-width: 300px;
-    }
-
-    .language-button {
+    .button {
+      margin: 10px 5px 0;
       padding: 10px 20px;
       border: none;
-      border-radius: 8px;
+      border-radius: 10px;
+      cursor: pointer;
       background-color: #555;
       color: white;
-      cursor: pointer;
-      font-size: 16px;
       transition: background-color 0.3s;
     }
 
-    .language-button:hover {
+    .button:hover {
       background-color: #777;
     }
 
-    /* Слайды */
-    .slide-window {
-      width: 100%;
-      max-width: 600px;
-      height: 400px;
-      background-color: #444;
-      border-radius: 16px;
-      overflow: hidden;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .navigation-buttons {
-      margin-top: 10px;
-      display: flex;
-      justify-content: space-between;
-      width: 100%;
-      max-width: 300px;
-    }
-
-    .nav-button {
-      padding: 10px 20px;
-      border: none;
-      border-radius: 8px;
-      background-color: #555;
-      color: white;
-      cursor: pointer;
-      font-size: 16px;
-      transition: background-color 0.3s;
-    }
-
-    .nav-button:hover {
-      background-color: #777;
-    }
-
-    /* Модальное окно */
-    .modal {
+    .overlay {
+      display: none;
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
       background-color: rgba(0, 0, 0, 0.6);
+      z-index: 10;
+    }
+
+    .info-box {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: #333;
+      padding: 20px;
+      border-radius: 15px;
+      color: white;
+      text-align: center;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .slide-container {
+      display: none;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+    }
+
+    .slide {
+      width: 300px;
+      height: 200px;
+      border-radius: 15px;
+      margin-bottom: 20px;
+      background-color: #555;
       display: flex;
       justify-content: center;
       align-items: center;
-    }
-
-    .modal-content {
-      background-color: #fff;
-      color: black;
-      padding: 20px;
-      border-radius: 8px;
-      max-width: 400px;
-      text-align: center;
+      color: white;
+      font-size: 20px;
     }
   </style>
 </head>
 <body>
 
-<!-- Главное окно -->
-<div id="start-screen" class="centered-container">
-  <div class="image-window">
-    <img src="img/course_1.gif" alt="Выбор изображения">
-    <button id="start-button" class="overlay-button">Начать</button>
-    <button id="info-button" class="overlay-button">i</button>
+<!-- Окно ввода имени, фамилии и почты -->
+<div id="name-input" class="centered-container">
+  <h2>Введите данные</h2>
+  <div class="input-container">
+    <input type="text" id="first-name" placeholder="Имя">
+    <input type="text" id="last-name" placeholder="Фамилия">
+    <input type="email" id="email" placeholder="Email">
   </div>
+  <button class="button" id="continue-button">Далее</button>
 </div>
 
-<!-- Выбор языка -->
-<div id="language-selection" class="centered-container hidden">
-  <div class="language-selection">
-    <button id="english-button" class="language-button">English</button>
-    <button id="russian-button" class="language-button">Русский</button>
-  </div>
-</div>
-
-<!-- Слайды -->
-<div id="slides" class="centered-container hidden">
-  <div class="slide-window">
-    <img id="slide-image" src="img/slide1.png" alt="Слайд">
-  </div>
-  <div class="navigation-buttons">
-    <button id="prev-slide" class="nav-button">Назад</button>
-    <button id="next-slide" class="nav-button">Вперед</button>
-  </div>
-</div>
-
-<!-- Модальное окно -->
-<div id="info-modal" class="modal hidden">
-  <div class="modal-content">
+<!-- Всплывающее окно с текстовой информацией -->
+<div class="overlay" id="info-overlay">
+  <div class="info-box">
     Это текстовая информация. Нажмите за пределами окна, чтобы закрыть.
   </div>
 </div>
 
+<!-- Окно выбора изображения -->
+<div id="image-selection" class="centered-container">
+  <div class="image-window">
+    <img src="img/course_1.gif" alt="Выбор изображения">
+  </div>
+  <button class="button" id="start-button">Начать</button>
+  <button class="button" id="info-button">i</button>
+</div>
+
+<!-- Окно выбора языка -->
+<div id="language-selection" class="centered-container">
+  <button class="button" id="russian-button">Русский</button>
+  <button class="button" id="english-button">English</button>
+</div>
+
+<!-- Окно слайдов -->
+<div id="slide-container" class="slide-container">
+  <div id="slide" class="slide">Слайд 1</div>
+  <button class="button" id="prev-slide">Назад</button>
+  <button class="button" id="next-slide">Вперед</button>
+</div>
+
 <script>
-  const startScreen = document.getElementById("start-screen");
-  const languageSelection = document.getElementById("language-selection");
-  const slides = document.getElementById("slides");
-  const infoModal = document.getElementById("info-modal");
+  // Элементы
+  const nameInput = document.getElementById('name-input');
+  const imageSelection = document.getElementById('image-selection');
+  const languageSelection = document.getElementById('language-selection');
+  const slideContainer = document.getElementById('slide-container');
+  const infoOverlay = document.getElementById('info-overlay');
 
-  const startButton = document.getElementById("start-button");
-  const infoButton = document.getElementById("info-button");
-  const englishButton = document.getElementById("english-button");
-  const russianButton = document.getElementById("russian-button");
-  const prevSlide = document.getElementById("prev-slide");
-  const nextSlide = document.getElementById("next-slide");
-  const slideImage = document.getElementById("slide-image");
+  const continueButton = document.getElementById('continue-button');
+  const startButton = document.getElementById('start-button');
+  const infoButton = document.getElementById('info-button');
+  const russianButton = document.getElementById('russian-button');
+  const englishButton = document.getElementById('english-button');
+  const prevSlideButton = document.getElementById('prev-slide');
+  const nextSlideButton = document.getElementById('next-slide');
 
-  const slideImages = ["img/slide1.png", "img/slide2.png", "img/slide3.png"];
-  let currentSlide = 0;
+  const slide = document.getElementById('slide');
+  const slides = ["Слайд 1", "Слайд 2", "Слайд 3"];
+  let currentSlideIndex = 0;
 
-  // Переход к выбору языка
-  startButton.addEventListener("click", () => {
-    startScreen.classList.add("hidden");
-    languageSelection.classList.remove("hidden");
+  // Показать следующее окно
+  continueButton.addEventListener('click', () => {
+    nameInput.style.display = 'none';
+    imageSelection.style.display = 'block';
   });
 
-  // Открытие модального окна
-  infoButton.addEventListener("click", () => {
-    infoModal.classList.remove("hidden");
+  startButton.addEventListener('click', () => {
+    imageSelection.style.display = 'none';
+    languageSelection.style.display = 'block';
   });
 
-  // Закрытие модального окна
-  infoModal.addEventListener("click", () => {
-    infoModal.classList.add("hidden");
+  russianButton.addEventListener('click', () => {
+    languageSelection.style.display = 'none';
+    slideContainer.style.display = 'block';
   });
 
-  // Переход к слайдам
-  russianButton.addEventListener("click", () => {
-    languageSelection.classList.add("hidden");
-    slides.classList.remove("hidden");
+  englishButton.addEventListener('click', () => {
+    languageSelection.style.display = 'none';
+    slideContainer.style.display = 'block';
   });
 
-  // Управление слайдами
-  nextSlide.addEventListener("click", () => {
-    currentSlide = (currentSlide + 1) % slideImages.length;
-    slideImage.src = slideImages[currentSlide];
+  infoButton.addEventListener('click', () => {
+    infoOverlay.style.display = 'block';
   });
 
-  prevSlide.addEventListener("click", () => {
-    if (currentSlide === 0) {
-      slides.classList.add("hidden");
-      languageSelection.classList.remove("hidden");
-    } else {
-      currentSlide = (currentSlide - 1 + slideImages.length) % slideImages.length;
-      slideImage.src = slideImages[currentSlide];
-    }
+  infoOverlay.addEventListener('click', () => {
+    infoOverlay.style.display = 'none';
   });
+
+  prevSlideButton.addEventListener('click', () => {
+    currentSlideIndex = (currentSlideIndex - 1 + slides.length) % slides.length;
+    slide.textContent = slides[currentSlideIndex];
+  });
+
+  nextSlideButton.addEventListener('click', () => {
+    currentSlideIndex = (currentSlideIndex + 1) % slides.length;
+    slide.textContent = slides[currentSlideIndex];
+  });
+
+  // Показать первое окно
+  nameInput.style.display = 'block';
 </script>
 
 </body>
