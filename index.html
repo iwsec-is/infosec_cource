@@ -98,15 +98,17 @@
       left: 50%;
       transform: translate(-50%, -50%);
       text-align: center;
-      width: 80%;
-      height: 80%;
+      width: 90%;
       max-width: 1200px;
       max-height: 800px;
-      overflow: hidden;
+      height: 80%;
       display: flex;
       justify-content: center;
       align-items: center;
       position: relative;
+      background-color: #555;
+      border-radius: 15px;
+      overflow: hidden;
     }
 
     .slide {
@@ -118,7 +120,7 @@
       background-color: #555;
       color: white;
       font-size: 20px;
-      border-radius: 15px;
+      position: relative;
     }
 
     .slide video,
@@ -128,22 +130,17 @@
       object-fit: contain;
     }
 
-    /* Добавление кнопок "Назад" и "Вперед" */
+    /* Кнопки навигации */
     .nav-buttons {
       position: absolute;
       top: 50%;
       left: 0;
       right: 0;
-      z-index: 20;
+      z-index: 10;
       display: flex;
       justify-content: space-between;
       width: 100%;
       padding: 0 20px;
-    }
-
-    .nav-buttons .button {
-      position: relative;
-      z-index: 30;
     }
 
   </style>
