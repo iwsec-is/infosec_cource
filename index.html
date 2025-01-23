@@ -31,50 +31,6 @@
       overflow: hidden;
     }
 
-    /* Светлая рамка */
-    .light-frame {
-      position: absolute;
-      background-color: rgba(255, 255, 255, 0.8);
-      padding: 20px;
-      border-radius: 15px;
-      font-size: 24px;
-      color: black;
-      text-align: center;
-      opacity: 0;
-      transform: scale(0);
-      transition: all 1s ease;
-    }
-
-    /* Стрелка */
-    .arrow {
-      position: absolute;
-      top: 50%;
-      right: 5%;
-      font-size: 50px;
-      color: white;
-      opacity: 0;
-      transform: translate(50%, -50%);
-      transition: all 1s ease;
-    }
-
-    /* Для отображения текста "Информация" */
-    #info-frame {
-      opacity: 1;
-      transform: scale(1);
-    }
-
-    /* Для отображения стрелки */
-    #arrow {
-      opacity: 1;
-      transform: translate(50%, -50%);
-    }
-
-    /* Для отображения текста "Риск" */
-    #risk-frame {
-      opacity: 1;
-      transform: scale(1);
-    }
-
     /* Окно ввода имени и фамилии */
     .centered-container {
       display: none;
@@ -130,29 +86,49 @@
       display: none;
     }
 
-    .overlay {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
+    /* Окно для презентации */
+    .presentation-window {
       width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.6);
-      z-index: 10;
+      height: 400px;
+      background-color: #333;
+      border-radius: 15px;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
 
-    .info-box {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background-color: #333;
+    .presentation-content {
+      width: 90%;
+      height: 90%;
+      background-color: #444;
+      border-radius: 10px;
       padding: 20px;
-      border-radius: 15px;
       color: white;
       text-align: center;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      overflow: auto;
     }
+
+    .navigation-buttons {
+      display: flex;
+      justify-content: space-between;
+      width: 90%;
+      margin-top: 10px;
+    }
+
+    .navigation-buttons button {
+      padding: 10px 20px;
+      background-color: #555;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    .navigation-buttons button:hover {
+      background-color: #777;
+    }
+
   </style>
 </head>
 <body>
@@ -174,7 +150,6 @@
     <img src="img/course_1.gif" alt="Выбор изображения">
   </div>
   <button class="button" id="start-button">Начать</button>
-  <button class="button" id="info-button">i</button>
 </div>
 
 <!-- Окно выбора языка -->
@@ -183,36 +158,20 @@
   <button class="button" id="english-button">English</button>
 </div>
 
-<!-- Всплывающее окно с текстовой информацией -->
-<div class="overlay" id="info-overlay">
-  <div class="info-box">
-    Course info
-    Intro
-    Information Data Security
-    Passwords
-    Cyber Security
-    Social Engineering
-    Office Security
-    Remote work
-    Incidents
-  </div>
-</div>
-
-<!-- Главное окно с анимацией -->
+<!-- Окно презентации -->
 <div class="main-window">
-  <!-- Рамка с текстом "ИНФОРМАЦИЯ как основная ценность бизнеса" -->
-  <div id="info-frame" class="light-frame">
-    ИНФОРМАЦИЯ как основная ценность бизнеса
+  <div class="presentation-window">
+    <div class="presentation-content" id="presentation-content">
+      <!-- Сюда будет вставляться контент презентации -->
+      <h2>Презентация</h2>
+      <p>Здесь может быть ваш текст или мультимедийные материалы.</p>
+    </div>
   </div>
 
-  <!-- Стрелка -->
-  <div id="arrow" class="arrow">
-    &#8594;
-  </div>
-
-  <!-- Рамка с текстом "РИСК потеря информации..." -->
-  <div id="risk-frame" class="light-frame">
-    РИСК потеря информации раскрытие информации информационные изменения недоступность информации
+  <!-- Кнопки навигации -->
+  <div class="navigation-buttons">
+    <button id="previous-button">Назад</button>
+    <button id="next-button">Вперед</button>
   </div>
 </div>
 
@@ -221,63 +180,61 @@
   const nameInput = document.getElementById('name-input');
   const imageSelection = document.getElementById('image-selection');
   const languageSelection = document.getElementById('language-selection');
-  const infoOverlay = document.getElementById('info-overlay');
-
-  const continueButton = document.getElementById('continue-button');
-  const startButton = document.getElementById('start-button');
-  const infoButton = document.getElementById('info-button');
-  const russianButton = document.getElementById('russian-button');
-  const englishButton = document.getElementById('english-button');
+  const presentationWindow = document.querySelector('.presentation-window');
+  const previousButton = document.getElementById('previous-button');
+  const nextButton = document.getElementById('next-button');
+  
+  let currentSlide = 0;
+  const slides = [
+    "<h2>Слайд 1: Введение</h2><p>Здесь будет описание введения.</p>",
+    "<h2>Слайд 2: Информация о компании</h2><p>Здесь будет информация о компании.</p>",
+    "<h2>Слайд 3: Преимущества</h2><p>Здесь будет информация о преимуществах.</p>"
+  ];
 
   // Показать следующее окно
-  continueButton.addEventListener('click', () => {
+  document.getElementById('continue-button').addEventListener('click', () => {
     nameInput.style.display = 'none';
     imageSelection.style.display = 'block';
   });
 
-  startButton.addEventListener('click', () => {
+  document.getElementById('start-button').addEventListener('click', () => {
     imageSelection.style.display = 'none';
     languageSelection.style.display = 'block';
   });
 
-  russianButton.addEventListener('click', () => {
+  document.getElementById('russian-button').addEventListener('click', () => {
     languageSelection.style.display = 'none';
-    document.querySelector('.main-window').style.display = 'block';
+    presentationWindow.style.display = 'block';
+    showSlide(currentSlide);
   });
 
-  englishButton.addEventListener('click', () => {
+  document.getElementById('english-button').addEventListener('click', () => {
     languageSelection.style.display = 'none';
-    document.querySelector('.main-window').style.display = 'block';
+    presentationWindow.style.display = 'block';
+    showSlide(currentSlide);
   });
 
-  infoButton.addEventListener('click', () => {
-    infoOverlay.style.display = 'block';
+  // Функция отображения слайда
+  function showSlide(index) {
+    const content = document.getElementById('presentation-content');
+    content.innerHTML = slides[index];
+  }
+
+  // Кнопка "Назад"
+  previousButton.addEventListener('click', () => {
+    if (currentSlide > 0) {
+      currentSlide--;
+      showSlide(currentSlide);
+    }
   });
 
-  infoOverlay.addEventListener('click', () => {
-    infoOverlay.style.display = 'none';
+  // Кнопка "Вперед"
+  nextButton.addEventListener('click', () => {
+    if (currentSlide < slides.length - 1) {
+      currentSlide++;
+      showSlide(currentSlide);
+    }
   });
-
-  // Анимация появления элементов
-  window.onload = function() {
-    // Появление рамки с текстом "ИНФОРМАЦИЯ"
-    setTimeout(() => {
-      document.getElementById('info-frame').style.opacity = '1';
-      document.getElementById('info-frame').style.transform = 'scale(1)';
-    }, 100);
-
-    // Появление стрелки через 2 секунды
-    setTimeout(() => {
-      document.getElementById('arrow').style.opacity = '1';
-      document.getElementById('arrow').style.transform = 'translate(50%, -50%)';
-    }, 2000);
-
-    // Появление второй рамки с текстом "РИСК" через 4 секунды
-    setTimeout(() => {
-      document.getElementById('risk-frame').style.opacity = '1';
-      document.getElementById('risk-frame').style.transform = 'scale(1)';
-    }, 4000);
-  };
 </script>
 
 </body>
