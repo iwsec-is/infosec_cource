@@ -30,6 +30,7 @@
       padding: 20px;
       text-align: center;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      width: 80%;
     }
 
     .input-container input {
@@ -113,10 +114,15 @@
       text-align: center;
     }
 
+    /* Панель навигации для кнопок "Назад" и "Вперед" */
     .navigation-buttons {
+      position: absolute;
+      bottom: -50px; /* Кнопки находятся за рамкой */
+      left: 50%;
+      transform: translateX(-50%);
       display: flex;
       justify-content: space-between;
-      margin-top: 20px;
+      width: 80%;
     }
 
     .navigation-buttons button {
@@ -144,7 +150,9 @@
     <input type="text" id="last-name" placeholder="Фамилия">
     <input type="email" id="email" placeholder="Email">
   </div>
-  <button class="button" id="continue-button">Далее</button>
+  <div class="navigation-buttons">
+    <button class="button" id="continue-button">Далее</button>
+  </div>
 </div>
 
 <!-- Окно выбора изображения -->
@@ -152,8 +160,10 @@
   <div class="image-window">
     <img src="img/course_1.gif" alt="Выбор изображения">
   </div>
-  <button class="button" id="start-button">Начать</button>
-  <button class="button" id="info-button">i</button>
+  <div class="navigation-buttons">
+    <button class="button" id="start-button">Начать</button>
+    <button class="button" id="info-button">i</button>
+  </div>
 </div>
 
 <!-- Полупрозрачное окно с информацией -->
