@@ -160,7 +160,13 @@
 
 <!-- Окно слайдов -->
 <div id="slide-container" class="slide-container">
-  <div id="slide" class="slide">Слайд 1</div>
+  <div id="slide" class="slide">
+    <!-- Видео для первого слайда -->
+    <video id="slide-video" width="300" height="200" controls>
+      <source src="img/slide_1.mp4" type="video/mp4">
+      Ваш браузер не поддерживает воспроизведение видео.
+    </video>
+  </div>
   <button class="button" id="prev-slide">Назад</button>
   <button class="button" id="next-slide">Вперед</button>
 </div>
@@ -172,6 +178,7 @@
   const languageSelection = document.getElementById('language-selection');
   const slideContainer = document.getElementById('slide-container');
   const infoOverlay = document.getElementById('info-overlay');
+  const slideVideo = document.getElementById('slide-video');
 
   const continueButton = document.getElementById('continue-button');
   const startButton = document.getElementById('start-button');
@@ -217,12 +224,34 @@
   prevSlideButton.addEventListener('click', () => {
     currentSlideIndex = (currentSlideIndex - 1 + slides.length) % slides.length;
     slide.textContent = slides[currentSlideIndex];
+    handleSlideChange();
   });
 
   nextSlideButton.addEventListener('click', () => {
     currentSlideIndex = (currentSlideIndex + 1) % slides.length;
     slide.textContent = slides[currentSlideIndex];
+    handleSlideChange();
   });
+
+  // Функция для обработки изменения слайда
+  function handleSlideChange() {
+    // Останавливаем видео, если оно есть
+    if (slideVideo) {
+      slideVideo.pause();
+      slideVideo.currentTime = 0; // Сбрасываем видео на начало
+    }
+    
+    // Если выбран первый слайд, воспроизводим видео
+    if (currentSlideIndex === 0) {
+      slideVideo.style.display = 'block'; // Показываем видео
+      slideVideo.play();
+    } else {
+      slideVideo.style.display = 'none'; // Скрываем видео на других слайдах
+    }
+  }
+
+  // Инициализируем слайд
+  handleSlideChange();
 
   // Показать первое окно
   nameInput.style.display = 'block';
