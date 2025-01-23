@@ -3,68 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Регистрация</title>
-  <script type="module">
-    // Импортируем необходимые функции из Firebase SDK
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
-    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js"; 
-
-    // Конфигурация Firebase
-    const firebaseConfig = {
-      apiKey: "AIzaSyD0QXeu6sT7w6GfIbu-qgTv4eHlMlMLuf4",
-      authDomain: "web-training-is.firebaseapp.com",
-      projectId: "web-training-is",
-      storageBucket: "web-training-is.firebasestorage.app",
-      messagingSenderId: "534413548505",
-      appId: "1:534413548505:web:ec82b1749cca4cfc1757c8",
-      measurementId: "G-XQ1K7B1CZF"
-    };
-
-    // Инициализация Firebase
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
-    // Функция для отправки данных в Firestore
-    async function register() {
-      // Получаем значения из формы
-      const firstName = document.getElementById('first-name').value;
-      const lastName = document.getElementById('last-name').value;
-      const email = document.getElementById('email').value;
-
-      // Логируем введенные данные
-      console.log("Данные для отправки:", firstName, lastName, email);
-
-      // Проверка, что все поля заполнены
-      if (firstName && lastName && email) {
-        try {
-          // Добавление данных в коллекцию "users"
-          const docRef = await addDoc(collection(db, "users"), {
-            firstName: firstName,
-            lastName: lastName,
-            email: email
-          });
-
-          // Логируем успех
-          console.log("Документ успешно добавлен с ID: ", docRef.id);
-          alert('Регистрация успешна!');
-        } catch (e) {
-          // Логируем ошибку
-          console.error("Ошибка при добавлении документа: ", e);
-          alert('Ошибка при регистрации');
-        }
-      } else {
-        // Если не все поля заполнены
-        alert('Пожалуйста, заполните все поля.');
-      }
-    }
-
-    // Ждем, когда весь документ загрузится
-    window.onload = function() {
-      console.log("Страница загружена, привязываем обработчик к кнопке.");
-      const registerButton = document.getElementById("register-button");
-      registerButton.addEventListener("click", register);
-    }
-  </script>
+  <title>Слайдер</title>
   <style>
     body {
       margin: 0;
@@ -78,13 +17,11 @@
       height: 100vh;
       overflow: hidden;
     }
-    .popup {
-      background-color: #444;
-      padding: 20px;
-      border-radius: 8px;
+
+    .container {
       text-align: center;
-      animation: fadeIn 0.5s ease;
     }
+
     .button {
       padding: 10px 20px;
       border: none;
@@ -92,25 +29,127 @@
       cursor: pointer;
       color: white;
       background-color: #555;
+      margin: 5px;
     }
+
     .button:hover {
       background-color: #777;
     }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: scale(0.9); }
-      to { opacity: 1; transform: scale(1); }
+
+    .slide {
+      display: none;
+      text-align: center;
+    }
+
+    .slide img {
+      max-width: 100%;
+      max-height: 400px;
+    }
+
+    .visible {
+      display: block;
+    }
+
+    .language-selection {
+      display: none;
+    }
+
+    .language-selection.visible {
+      display: block;
+    }
+
+    .registration {
+      display: block;
     }
   </style>
 </head>
 <body>
+  <div class="container">
+    <!-- Регистрация -->
+    <div id="registration" class="registration">
+      <input type="text" id="first-name" placeholder="Имя" class="button"><br><br>
+      <input type="text" id="last-name" placeholder="Фамилия" class="button"><br><br>
+      <input type="email" id="email" placeholder="Email" class="button"><br><br>
+      <button id="next-button" class="button">Далее</button>
+    </div>
 
-<div id="registration" class="popup">
-  <h2>Регистрация</h2>
-  <input type="text" id="first-name" placeholder="Имя" class="button"><br><br>
-  <input type="text" id="last-name" placeholder="Фамилия" class="button"><br><br>
-  <input type="email" id="email" placeholder="Email" class="button"><br><br>
-  <button id="register-button" class="button">Далее</button>
-</div>
+    <!-- Выбор языка -->
+    <div id="language-selection" class="language-selection">
+      <button id="english-button" class="button">English</button>
+      <button id="russian-button" class="button">Русский</button>
+    </div>
 
+    <!-- Слайдер -->
+    <div id="slider" class="slide">
+      <img id="slide-image" src="" alt="Слайд">
+      <div>
+        <button id="prev-button" class="button">Назад</button>
+        <button id="next-slide-button" class="button">Вперёд</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Элементы страницы
+    const registrationDiv = document.getElementById("registration");
+    const languageSelectionDiv = document.getElementById("language-selection");
+    const sliderDiv = document.getElementById("slider");
+
+    const nextButton = document.getElementById("next-button");
+    const englishButton = document.getElementById("english-button");
+    const russianButton = document.getElementById("russian-button");
+
+    const prevButton = document.getElementById("prev-button");
+    const nextSlideButton = document.getElementById("next-slide-button");
+    const slideImage = document.getElementById("slide-image");
+
+    // Массив с изображениями
+    const slides = [
+      "slide1.jpg", // Замените на пути к вашим изображениям
+      "slide2.jpg",
+      "slide3.jpg"
+    ];
+
+    let currentSlide = 0;
+
+    // Переход к языковому выбору
+    nextButton.addEventListener("click", () => {
+      registrationDiv.style.display = "none";
+      languageSelectionDiv.classList.add("visible");
+    });
+
+    // Обработка выбора языка
+    russianButton.addEventListener("click", () => {
+      languageSelectionDiv.classList.remove("visible");
+      sliderDiv.classList.add("visible");
+      updateSlide();
+    });
+
+    // Обновление слайда
+    function updateSlide() {
+      if (currentSlide >= 0 && currentSlide < slides.length) {
+        slideImage.src = slides[currentSlide];
+      }
+    }
+
+    // Обработка кнопки "Вперёд"
+    nextSlideButton.addEventListener("click", () => {
+      if (currentSlide < slides.length - 1) {
+        currentSlide++;
+        updateSlide();
+      }
+    });
+
+    // Обработка кнопки "Назад"
+    prevButton.addEventListener("click", () => {
+      if (currentSlide > 0) {
+        currentSlide--;
+        updateSlide();
+      } else {
+        sliderDiv.classList.remove("visible");
+        languageSelectionDiv.classList.add("visible");
+      }
+    });
+  </script>
 </body>
 </html>
