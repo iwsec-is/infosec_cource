@@ -3,212 +3,253 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Пример</title>
+  <title>Интерактивный курс</title>
   <style>
     body {
       margin: 0;
       padding: 0;
       background-color: #2e2e2e;
-      color: white;
-      font-family: Arial, sans-serif;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
-      overflow: hidden;
-    }
-    .centered-container {
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-    }
-    .registration {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      background-color: rgba(255, 255, 255, 0.1);
-      padding: 20px;
-      border-radius: 8px;
-    }
-    .button {
-      padding: 10px 20px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
       color: white;
-      background-color: #555;
-      opacity: 0.8;
+      font-family: Arial, sans-serif;
     }
-    .button:hover {
-      background-color: #777;
-      opacity: 1;
+
+    .hidden {
+      display: none;
     }
-    .image-window {
-      position: relative;
-      background-color: rgba(255, 255, 255, 0.1);
-      width: 300px;
-      height: 200px;
-      margin-bottom: 20px;
+
+    /* Главное окно */
+    .centered-container {
       display: flex;
-      align-items: center;
       justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      border-radius: 16px;
+      background-color: #3e3e3e;
+      padding: 20px;
+      max-width: 80%;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
     }
+
+    /* Окно с изображением */
+    .image-window {
+      width: 100%;
+      max-width: 600px;
+      position: relative;
+      border-radius: 16px;
+      overflow: hidden;
+      background-color: #444;
+    }
+
     .image-window img {
-      max-width: 100%;
-      max-height: 100%;
+      display: block;
+      width: 100%;
+      height: auto;
     }
-    .image-buttons {
+
+    /* Кнопки на изображении */
+    .overlay-button {
       position: absolute;
       bottom: 10px;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      gap: 10px;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 8px;
+      background-color: rgba(255, 255, 255, 0.2);
+      color: white;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background-color 0.3s;
     }
+
+    .overlay-button:hover {
+      background-color: rgba(255, 255, 255, 0.4);
+    }
+
+    #start-button {
+      left: 10%;
+    }
+
+    #info-button {
+      right: 10%;
+    }
+
+    /* Выбор языка */
+    .language-selection {
+      display: flex;
+      justify-content: space-around;
+      width: 100%;
+      max-width: 300px;
+    }
+
+    .language-button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      background-color: #555;
+      color: white;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.3s;
+    }
+
+    .language-button:hover {
+      background-color: #777;
+    }
+
+    /* Слайды */
+    .slide-window {
+      width: 100%;
+      max-width: 600px;
+      height: 400px;
+      background-color: #444;
+      border-radius: 16px;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .navigation-buttons {
+      margin-top: 10px;
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      max-width: 300px;
+    }
+
+    .nav-button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      background-color: #555;
+      color: white;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.3s;
+    }
+
+    .nav-button:hover {
+      background-color: #777;
+    }
+
+    /* Модальное окно */
     .modal {
-      display: none;
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background-color: rgba(0, 0, 0, 0.8);
+      background-color: rgba(0, 0, 0, 0.6);
       display: flex;
       justify-content: center;
       align-items: center;
     }
+
     .modal-content {
-      background-color: #444;
+      background-color: #fff;
+      color: black;
       padding: 20px;
       border-radius: 8px;
+      max-width: 400px;
       text-align: center;
-    }
-    .slide-window {
-      display: none;
-      flex-direction: column;
-      align-items: center;
-    }
-    .slide {
-      width: 300px;
-      height: 200px;
-      background-color: rgba(255, 255, 255, 0.1);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 20px;
-    }
-    .slide-buttons {
-      display: flex;
-      gap: 10px;
     }
   </style>
 </head>
 <body>
 
-<!-- Registration Form -->
-<div id="registration" class="registration">
-  <input type="text" id="first-name" placeholder="Имя" class="button">
-  <input type="text" id="last-name" placeholder="Фамилия" class="button">
-  <input type="email" id="email" placeholder="Email" class="button">
-  <button id="next-button" class="button">Далее</button>
-</div>
-
-<!-- Image Selection Window -->
-<div id="image-selection" class="centered-container">
+<!-- Главное окно -->
+<div id="start-screen" class="centered-container">
   <div class="image-window">
     <img src="img/course_1.gif" alt="Выбор изображения">
-    <div class="image-buttons">
-      <button id="start-button" class="button">Начать</button>
-      <button id="info-button" class="button">i</button>
-    </div>
+    <button id="start-button" class="overlay-button">Начать</button>
+    <button id="info-button" class="overlay-button">i</button>
   </div>
 </div>
 
-<!-- Modal for Info -->
-<div id="modal" class="modal">
+<!-- Выбор языка -->
+<div id="language-selection" class="centered-container hidden">
+  <div class="language-selection">
+    <button id="english-button" class="language-button">English</button>
+    <button id="russian-button" class="language-button">Русский</button>
+  </div>
+</div>
+
+<!-- Слайды -->
+<div id="slides" class="centered-container hidden">
+  <div class="slide-window">
+    <img id="slide-image" src="img/slide1.png" alt="Слайд">
+  </div>
+  <div class="navigation-buttons">
+    <button id="prev-slide" class="nav-button">Назад</button>
+    <button id="next-slide" class="nav-button">Вперед</button>
+  </div>
+</div>
+
+<!-- Модальное окно -->
+<div id="info-modal" class="modal hidden">
   <div class="modal-content">
-    <p>Это текстовая информация. Нажмите за пределами окна, чтобы закрыть.</p>
-  </div>
-</div>
-
-<!-- Language Selection -->
-<div id="language-selection" class="centered-container">
-  <button id="english-button" class="button">English</button>
-  <button id="russian-button" class="button">Русский</button>
-</div>
-
-<!-- Slides Window -->
-<div id="slides" class="slide-window">
-  <div id="slide" class="slide">
-    <p>Слайд 1</p>
-  </div>
-  <div class="slide-buttons">
-    <button id="back-button" class="button">Назад</button>
-    <button id="forward-button" class="button">Вперёд</button>
+    Это текстовая информация. Нажмите за пределами окна, чтобы закрыть.
   </div>
 </div>
 
 <script>
-  const registration = document.getElementById('registration');
-  const imageSelection = document.getElementById('image-selection');
-  const modal = document.getElementById('modal');
-  const languageSelection = document.getElementById('language-selection');
-  const slides = document.getElementById('slides');
-  const slideContent = document.getElementById('slide');
+  const startScreen = document.getElementById("start-screen");
+  const languageSelection = document.getElementById("language-selection");
+  const slides = document.getElementById("slides");
+  const infoModal = document.getElementById("info-modal");
 
-  const startButton = document.getElementById('start-button');
-  const infoButton = document.getElementById('info-button');
-  const nextButton = document.getElementById('next-button');
-  const englishButton = document.getElementById('english-button');
-  const russianButton = document.getElementById('russian-button');
-  const backButton = document.getElementById('back-button');
-  const forwardButton = document.getElementById('forward-button');
+  const startButton = document.getElementById("start-button");
+  const infoButton = document.getElementById("info-button");
+  const englishButton = document.getElementById("english-button");
+  const russianButton = document.getElementById("russian-button");
+  const prevSlide = document.getElementById("prev-slide");
+  const nextSlide = document.getElementById("next-slide");
+  const slideImage = document.getElementById("slide-image");
 
-  let currentSlide = 1;
+  const slideImages = ["img/slide1.png", "img/slide2.png", "img/slide3.png"];
+  let currentSlide = 0;
 
-  nextButton.addEventListener('click', () => {
-    registration.style.display = 'none';
-    imageSelection.style.display = 'flex';
+  // Переход к выбору языка
+  startButton.addEventListener("click", () => {
+    startScreen.classList.add("hidden");
+    languageSelection.classList.remove("hidden");
   });
 
-  infoButton.addEventListener('click', () => {
-    modal.style.display = 'flex';
+  // Открытие модального окна
+  infoButton.addEventListener("click", () => {
+    infoModal.classList.remove("hidden");
   });
 
-  modal.addEventListener('click', () => {
-    modal.style.display = 'none';
+  // Закрытие модального окна
+  infoModal.addEventListener("click", () => {
+    infoModal.classList.add("hidden");
   });
 
-  startButton.addEventListener('click', () => {
-    imageSelection.style.display = 'none';
-    languageSelection.style.display = 'flex';
+  // Переход к слайдам
+  russianButton.addEventListener("click", () => {
+    languageSelection.classList.add("hidden");
+    slides.classList.remove("hidden");
   });
 
-  russianButton.addEventListener('click', () => {
-    languageSelection.style.display = 'none';
-    slides.style.display = 'flex';
+  // Управление слайдами
+  nextSlide.addEventListener("click", () => {
+    currentSlide = (currentSlide + 1) % slideImages.length;
+    slideImage.src = slideImages[currentSlide];
   });
 
-  englishButton.addEventListener('click', () => {
-    languageSelection.style.display = 'none';
-    slides.style.display = 'flex';
-  });
-
-  backButton.addEventListener('click', () => {
-    if (currentSlide === 1) {
-      slides.style.display = 'none';
-      languageSelection.style.display = 'flex';
+  prevSlide.addEventListener("click", () => {
+    if (currentSlide === 0) {
+      slides.classList.add("hidden");
+      languageSelection.classList.remove("hidden");
     } else {
-      currentSlide--;
-      slideContent.innerHTML = `<p>Слайд ${currentSlide}</p>`;
+      currentSlide = (currentSlide - 1 + slideImages.length) % slideImages.length;
+      slideImage.src = slideImages[currentSlide];
     }
   });
-
-  forwardButton.addEventListener('click', () => {
-    currentSlide++;
-    slideContent.innerHTML = `<p>Слайд ${currentSlide}</p>`;
-  });
 </script>
+
 </body>
 </html>
