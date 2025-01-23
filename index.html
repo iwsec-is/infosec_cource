@@ -3,181 +3,184 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Interactive Flow</title>
+  <title>Интерфейс</title>
   <style>
     body {
       margin: 0;
       padding: 0;
-      background-color: #f4f4f4;
+      background-color: #2e2e2e;
+      color: white;
       font-family: Arial, sans-serif;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
-      overflow: hidden;
     }
-    .container {
-      width: 90%;
-      max-width: 400px;
-      background-color: #ffffff;
-      border-radius: 8px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+    .popup {
+      background-color: #444;
       padding: 20px;
+      border-radius: 8px;
       text-align: center;
-      transition: all 0.3s ease;
+      animation: fadeIn 0.5s ease;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     }
-    .form-group {
-      margin: 15px 0;
-    }
-    input {
-      width: calc(100% - 20px);
+
+    .popup input {
       padding: 10px;
       margin: 10px 0;
-      border: 1px solid #ddd;
+      border: 1px solid #ccc;
       border-radius: 5px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-      transition: border-color 0.3s;
-    }
-    input:focus {
-      border-color: #888;
+      width: 90%;
       outline: none;
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
     }
-    .button {
+
+    .popup button {
       padding: 10px 20px;
       border: none;
       border-radius: 5px;
       cursor: pointer;
       color: white;
       background-color: #555;
-      transition: background-color 0.3s;
+      margin: 10px;
     }
-    .button:hover {
+
+    .popup button:hover {
       background-color: #777;
     }
-    .hidden {
-      display: none;
-    }
-    .overlay {
+
+    .modal-overlay {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 0, 0, 0.5);
-      display: flex;
+      background-color: rgba(0, 0, 0, 0.7);
+      display: none;
       justify-content: center;
       align-items: center;
-      z-index: 10;
     }
-    .info-box {
+
+    .modal {
       background-color: #fff;
+      color: #000;
       padding: 20px;
       border-radius: 8px;
       text-align: center;
+      max-width: 400px;
+      width: 90%;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     }
-    .language-options, .slides {
-      text-align: center;
+
+    .hidden {
+      display: none;
     }
-    .slides img {
-      width: 100%;
-      max-width: 300px;
-      border-radius: 8px;
+
+    .centered-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .image-box {
+      background-color: #ccc;
+      width: 300px;
+      height: 200px;
+      margin: 20px 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: black;
+      border-radius: 10px;
     }
   </style>
 </head>
 <body>
-  <div id="stage-1" class="container">
-    <h2>Введите данные</h2>
-    <div class="form-group">
-      <input type="text" id="first-name" placeholder="Имя">
-      <input type="text" id="last-name" placeholder="Фамилия">
-      <input type="email" id="email" placeholder="Email">
-    </div>
-    <button class="button" onclick="goToStage2()">Далее</button>
+
+<div id="registration" class="popup">
+  <h2>Введите данные</h2>
+  <input type="text" id="first-name" placeholder="Имя"><br>
+  <input type="text" id="last-name" placeholder="Фамилия"><br>
+  <input type="email" id="email" placeholder="Email"><br>
+  <button onclick="showStartScreen()">Далее</button>
+</div>
+
+<div id="start-screen" class="hidden">
+  <div class="centered-container">
+    <div class="image-box">Изображение</div>
+    <button onclick="showLanguageSelection()">Начать</button>
+    <button onclick="showInfoModal()">i</button>
   </div>
+</div>
 
-  <div id="stage-2" class="container hidden">
-    <h2>Интерактивный контент</h2>
-    <div class="small-window">
-      <img src="https://via.placeholder.com/100" alt="Placeholder">
-      <br><br>
-      <button class="button" onclick="goToLanguageSelection()">Начать</button>
-      <button class="button" onclick="showInfo()">i</button>
-    </div>
+<div id="language-selection" class="hidden popup">
+  <button onclick="showSlides('russian')">Русский</button>
+  <button onclick="showSlides('english')">English</button>
+</div>
+
+<div id="slides" class="hidden popup">
+  <div id="slide-content" class="image-box">Слайд 1</div>
+  <button id="prev-slide" onclick="prevSlide()">Назад</button>
+  <button id="next-slide" onclick="nextSlide()">Вперед</button>
+</div>
+
+<div id="modal-overlay" class="modal-overlay" onclick="hideInfoModal()">
+  <div class="modal" onclick="event.stopPropagation()">
+    Это текстовая информация. Нажмите за пределами окна, чтобы закрыть.
   </div>
+</div>
 
-  <div id="stage-3" class="container hidden">
-    <h2>Выберите язык</h2>
-    <button class="button" onclick="startSlides('ru')">Русский</button>
-    <button class="button" onclick="startSlides('en')">English</button>
-  </div>
+<script>
+  let currentSlide = 0;
+  const slides = ["Слайд 1", "Слайд 2", "Слайд 3"];
 
-  <div id="slides-container" class="container hidden">
-    <div class="slides">
-      <img id="slide-image" src="https://via.placeholder.com/300" alt="Slide">
-    </div>
-    <button class="button" onclick="prevSlide()">Назад</button>
-    <button class="button" onclick="nextSlide()">Вперед</button>
-  </div>
+  function showStartScreen() {
+    document.getElementById('registration').classList.add('hidden');
+    document.getElementById('start-screen').classList.remove('hidden');
+  }
 
-  <div id="info-overlay" class="overlay hidden">
-    <div class="info-box">
-      <p>Это текстовая информация. Нажмите за пределами окна, чтобы закрыть.</p>
-    </div>
-  </div>
+  function showLanguageSelection() {
+    document.getElementById('start-screen').classList.add('hidden');
+    document.getElementById('language-selection').classList.remove('hidden');
+  }
 
-  <script>
-    let currentSlide = 0;
-    const slides = [
-      "https://via.placeholder.com/300?text=Slide+1",
-      "https://via.placeholder.com/300?text=Slide+2",
-      "https://via.placeholder.com/300?text=Slide+3"
-    ];
+  function showSlides(language) {
+    document.getElementById('language-selection').classList.add('hidden');
+    document.getElementById('slides').classList.remove('hidden');
+    updateSlide();
+  }
 
-    function goToStage2() {
-      document.getElementById("stage-1").classList.add("hidden");
-      document.getElementById("stage-2").classList.remove("hidden");
+  function updateSlide() {
+    const slideContent = document.getElementById('slide-content');
+    slideContent.textContent = slides[currentSlide];
+  }
+
+  function prevSlide() {
+    if (currentSlide > 0) {
+      currentSlide--;
+      updateSlide();
+    } else {
+      document.getElementById('slides').classList.add('hidden');
+      document.getElementById('language-selection').classList.remove('hidden');
     }
+  }
 
-    function goToLanguageSelection() {
-      document.getElementById("stage-2").classList.add("hidden");
-      document.getElementById("stage-3").classList.remove("hidden");
-    }
-
-    function startSlides(language) {
-      document.getElementById("stage-3").classList.add("hidden");
-      document.getElementById("slides-container").classList.remove("hidden");
+  function nextSlide() {
+    if (currentSlide < slides.length - 1) {
+      currentSlide++;
       updateSlide();
     }
+  }
 
-    function updateSlide() {
-      document.getElementById("slide-image").src = slides[currentSlide];
-    }
+  function showInfoModal() {
+    document.getElementById('modal-overlay').style.display = 'flex';
+  }
 
-    function prevSlide() {
-      if (currentSlide === 0) {
-        document.getElementById("slides-container").classList.add("hidden");
-        document.getElementById("stage-3").classList.remove("hidden");
-      } else {
-        currentSlide--;
-        updateSlide();
-      }
-    }
+  function hideInfoModal() {
+    document.getElementById('modal-overlay').style.display = 'none';
+  }
+</script>
 
-    function nextSlide() {
-      if (currentSlide < slides.length - 1) {
-        currentSlide++;
-        updateSlide();
-      }
-    }
-
-    function showInfo() {
-      document.getElementById("info-overlay").classList.remove("hidden");
-    }
-
-    document.getElementById("info-overlay").addEventListener("click", function() {
-      this.classList.add("hidden");
-    });
-  </script>
 </body>
 </html>
