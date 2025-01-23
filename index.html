@@ -18,6 +18,64 @@
       overflow: hidden;
     }
 
+    /* Главное окно */
+    .main-window {
+      position: relative;
+      width: 80%;
+      height: 70%;
+      background-color: #444;
+      border-radius: 15px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    /* Светлая рамка */
+    .light-frame {
+      position: absolute;
+      background-color: rgba(255, 255, 255, 0.8);
+      padding: 20px;
+      border-radius: 15px;
+      font-size: 24px;
+      color: black;
+      text-align: center;
+      opacity: 0;
+      transform: scale(0);
+      transition: all 1s ease;
+    }
+
+    /* Стрелка */
+    .arrow {
+      position: absolute;
+      top: 50%;
+      right: 5%;
+      font-size: 50px;
+      color: white;
+      opacity: 0;
+      transform: translate(50%, -50%);
+      transition: all 1s ease;
+    }
+
+    /* Для отображения текста "Информация" */
+    #info-frame {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    /* Для отображения стрелки */
+    #arrow {
+      opacity: 1;
+      transform: translate(50%, -50%);
+    }
+
+    /* Для отображения текста "Риск" */
+    #risk-frame {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    /* Окно ввода имени и фамилии */
     .centered-container {
       display: none;
       position: absolute;
@@ -67,6 +125,11 @@
       background-color: #777;
     }
 
+    /* Окно выбора языка */
+    #language-selection {
+      display: none;
+    }
+
     .overlay {
       display: none;
       position: fixed;
@@ -90,59 +153,6 @@
       text-align: center;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
     }
-
-    .slide-container {
-      display: none;
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      text-align: center;
-      width: 90%;
-      max-width: 1200px;
-      max-height: 800px;
-      height: 80%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      position: relative;
-      background-color: #555;
-      border-radius: 15px;
-      overflow: hidden;
-    }
-
-    .slide {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background-color: #555;
-      color: white;
-      font-size: 20px;
-      position: relative;
-    }
-
-    .slide video,
-    .slide img {
-      max-width: 100%;
-      max-height: 100%;
-      object-fit: contain;
-    }
-
-    /* Кнопки навигации */
-    .nav-buttons {
-      position: absolute;
-      top: 50%;
-      left: 0;
-      right: 0;
-      z-index: 10;
-      display: flex;
-      justify-content: space-between;
-      width: 100%;
-      padding: 0 20px;
-    }
-
   </style>
 </head>
 <body>
@@ -156,21 +166,6 @@
     <input type="email" id="email" placeholder="Email">
   </div>
   <button class="button" id="continue-button">Далее</button>
-</div>
-
-<!-- Всплывающее окно с текстовой информацией -->
-<div class="overlay" id="info-overlay">
-  <div class="info-box">
-    Course info
-    Intro
-    Information Data Security
-    Passwords
-    Cyber Security
-    Social Engineering
-    Office Security
-    Remote work
-    Incidents
-  </div>
 </div>
 
 <!-- Окно выбора изображения -->
@@ -188,20 +183,36 @@
   <button class="button" id="english-button">English</button>
 </div>
 
-<!-- Окно слайдов -->
-<div id="slide-container" class="slide-container">
-  <div id="slide" class="slide">
-    <!-- Видео для первого слайда, но оно не будет видно при старте -->
-    <video id="slide-video" width="100%" height="100%" controls style="display: none;">
-      <source src="img/slide_1.mp4" type="video/mp4">
-      Ваш браузер не поддерживает воспроизведение видео.
-    </video>
+<!-- Всплывающее окно с текстовой информацией -->
+<div class="overlay" id="info-overlay">
+  <div class="info-box">
+    Course info
+    Intro
+    Information Data Security
+    Passwords
+    Cyber Security
+    Social Engineering
+    Office Security
+    Remote work
+    Incidents
   </div>
-  
-  <!-- Кнопки для перехода между слайдами -->
-  <div class="nav-buttons">
-    <button class="button" id="prev-slide">Назад</button>
-    <button class="button" id="next-slide">Вперед</button>
+</div>
+
+<!-- Главное окно с анимацией -->
+<div class="main-window">
+  <!-- Рамка с текстом "ИНФОРМАЦИЯ как основная ценность бизнеса" -->
+  <div id="info-frame" class="light-frame">
+    ИНФОРМАЦИЯ как основная ценность бизнеса
+  </div>
+
+  <!-- Стрелка -->
+  <div id="arrow" class="arrow">
+    &#8594;
+  </div>
+
+  <!-- Рамка с текстом "РИСК потеря информации..." -->
+  <div id="risk-frame" class="light-frame">
+    РИСК потеря информации раскрытие информации информационные изменения недоступность информации
   </div>
 </div>
 
@@ -210,21 +221,13 @@
   const nameInput = document.getElementById('name-input');
   const imageSelection = document.getElementById('image-selection');
   const languageSelection = document.getElementById('language-selection');
-  const slideContainer = document.getElementById('slide-container');
   const infoOverlay = document.getElementById('info-overlay');
-  const slideVideo = document.getElementById('slide-video');
 
   const continueButton = document.getElementById('continue-button');
   const startButton = document.getElementById('start-button');
   const infoButton = document.getElementById('info-button');
   const russianButton = document.getElementById('russian-button');
   const englishButton = document.getElementById('english-button');
-  const prevSlideButton = document.getElementById('prev-slide');
-  const nextSlideButton = document.getElementById('next-slide');
-
-  const slide = document.getElementById('slide');
-  const slides = ["Слайд 1", "Слайд 2", "Слайд 3"];
-  let currentSlideIndex = 0;
 
   // Показать следующее окно
   continueButton.addEventListener('click', () => {
@@ -239,12 +242,12 @@
 
   russianButton.addEventListener('click', () => {
     languageSelection.style.display = 'none';
-    slideContainer.style.display = 'block';
+    document.querySelector('.main-window').style.display = 'block';
   });
 
   englishButton.addEventListener('click', () => {
     languageSelection.style.display = 'none';
-    slideContainer.style.display = 'block';
+    document.querySelector('.main-window').style.display = 'block';
   });
 
   infoButton.addEventListener('click', () => {
@@ -255,37 +258,26 @@
     infoOverlay.style.display = 'none';
   });
 
-  prevSlideButton.addEventListener('click', () => {
-    currentSlideIndex = (currentSlideIndex - 1 + slides.length) % slides.length;
-    slide.textContent = slides[currentSlideIndex];
-    handleSlideChange();
-  });
+  // Анимация появления элементов
+  window.onload = function() {
+    // Появление рамки с текстом "ИНФОРМАЦИЯ"
+    setTimeout(() => {
+      document.getElementById('info-frame').style.opacity = '1';
+      document.getElementById('info-frame').style.transform = 'scale(1)';
+    }, 100);
 
-  nextSlideButton.addEventListener('click', () => {
-    currentSlideIndex = (currentSlideIndex + 1) % slides.length;
-    slide.textContent = slides[currentSlideIndex];
-    handleSlideChange();
-  });
+    // Появление стрелки через 2 секунды
+    setTimeout(() => {
+      document.getElementById('arrow').style.opacity = '1';
+      document.getElementById('arrow').style.transform = 'translate(50%, -50%)';
+    }, 2000);
 
-  // Функция для обработки изменения слайда
-  function handleSlideChange() {
-    // Останавливаем видео, если оно есть
-    if (slideVideo) {
-      slideVideo.pause();
-      slideVideo.currentTime = 0; // Сбрасываем видео на начало
-    }
-    
-    // Если выбран первый слайд, воспроизводим видео
-    if (currentSlideIndex === 0) {
-      slideVideo.style.display = 'block'; // Показываем видео
-      slideVideo.play();
-    } else {
-      slideVideo.style.display = 'none'; // Скрываем видео на других слайдах
-    }
-  }
-
-  // Показать первое окно
-  nameInput.style.display = 'block';
+    // Появление второй рамки с текстом "РИСК" через 4 секунды
+    setTimeout(() => {
+      document.getElementById('risk-frame').style.opacity = '1';
+      document.getElementById('risk-frame').style.transform = 'scale(1)';
+    }, 4000);
+  };
 </script>
 
 </body>
