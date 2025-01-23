@@ -3,13 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Слайдер</title>
+  <title>Interactive Flow</title>
   <style>
     body {
       margin: 0;
       padding: 0;
-      background-color: #2e2e2e;
-      color: white;
+      background-color: #f4f4f4;
       font-family: Arial, sans-serif;
       display: flex;
       justify-content: center;
@@ -17,11 +16,32 @@
       height: 100vh;
       overflow: hidden;
     }
-
     .container {
+      width: 90%;
+      max-width: 400px;
+      background-color: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      padding: 20px;
       text-align: center;
+      transition: all 0.3s ease;
     }
-
+    .form-group {
+      margin: 15px 0;
+    }
+    input {
+      width: calc(100% - 20px);
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      transition: border-color 0.3s;
+    }
+    input:focus {
+      border-color: #888;
+      outline: none;
+    }
     .button {
       padding: 10px 20px;
       border: none;
@@ -29,126 +49,134 @@
       cursor: pointer;
       color: white;
       background-color: #555;
-      margin: 5px;
+      transition: background-color 0.3s;
     }
-
     .button:hover {
       background-color: #777;
     }
-
-    .slide {
+    .hidden {
       display: none;
+    }
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
+    }
+    .info-box {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
       text-align: center;
     }
-
-    .slide img {
-      max-width: 100%;
-      max-height: 400px;
+    .language-options, .slides {
+      text-align: center;
     }
-
-    .visible {
-      display: block;
-    }
-
-    .language-selection {
-      display: none;
-    }
-
-    .language-selection.visible {
-      display: block;
-    }
-
-    .registration {
-      display: block;
+    .slides img {
+      width: 100%;
+      max-width: 300px;
+      border-radius: 8px;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <!-- Регистрация -->
-    <div id="registration" class="registration">
-      <input type="text" id="first-name" placeholder="Имя" class="button"><br><br>
-      <input type="text" id="last-name" placeholder="Фамилия" class="button"><br><br>
-      <input type="email" id="email" placeholder="Email" class="button"><br><br>
-      <button id="next-button" class="button">Далее</button>
+  <div id="stage-1" class="container">
+    <h2>Введите данные</h2>
+    <div class="form-group">
+      <input type="text" id="first-name" placeholder="Имя">
+      <input type="text" id="last-name" placeholder="Фамилия">
+      <input type="email" id="email" placeholder="Email">
     </div>
+    <button class="button" onclick="goToStage2()">Далее</button>
+  </div>
 
-    <!-- Выбор языка -->
-    <div id="language-selection" class="language-selection">
-      <button id="english-button" class="button">English</button>
-      <button id="russian-button" class="button">Русский</button>
+  <div id="stage-2" class="container hidden">
+    <h2>Интерактивный контент</h2>
+    <div class="small-window">
+      <img src="https://via.placeholder.com/100" alt="Placeholder">
+      <br><br>
+      <button class="button" onclick="goToLanguageSelection()">Начать</button>
+      <button class="button" onclick="showInfo()">i</button>
     </div>
+  </div>
 
-    <!-- Слайдер -->
-    <div id="slider" class="slide">
-      <img id="slide-image" src="" alt="Слайд">
-      <div>
-        <button id="prev-button" class="button">Назад</button>
-        <button id="next-slide-button" class="button">Вперёд</button>
-      </div>
+  <div id="stage-3" class="container hidden">
+    <h2>Выберите язык</h2>
+    <button class="button" onclick="startSlides('ru')">Русский</button>
+    <button class="button" onclick="startSlides('en')">English</button>
+  </div>
+
+  <div id="slides-container" class="container hidden">
+    <div class="slides">
+      <img id="slide-image" src="https://via.placeholder.com/300" alt="Slide">
+    </div>
+    <button class="button" onclick="prevSlide()">Назад</button>
+    <button class="button" onclick="nextSlide()">Вперед</button>
+  </div>
+
+  <div id="info-overlay" class="overlay hidden">
+    <div class="info-box">
+      <p>Это текстовая информация. Нажмите за пределами окна, чтобы закрыть.</p>
     </div>
   </div>
 
   <script>
-    // Элементы страницы
-    const registrationDiv = document.getElementById("registration");
-    const languageSelectionDiv = document.getElementById("language-selection");
-    const sliderDiv = document.getElementById("slider");
-
-    const nextButton = document.getElementById("next-button");
-    const englishButton = document.getElementById("english-button");
-    const russianButton = document.getElementById("russian-button");
-
-    const prevButton = document.getElementById("prev-button");
-    const nextSlideButton = document.getElementById("next-slide-button");
-    const slideImage = document.getElementById("slide-image");
-
-    // Массив с изображениями
+    let currentSlide = 0;
     const slides = [
-      "slide1.jpg", // Замените на пути к вашим изображениям
-      "slide2.jpg",
-      "slide3.jpg"
+      "https://via.placeholder.com/300?text=Slide+1",
+      "https://via.placeholder.com/300?text=Slide+2",
+      "https://via.placeholder.com/300?text=Slide+3"
     ];
 
-    let currentSlide = 0;
+    function goToStage2() {
+      document.getElementById("stage-1").classList.add("hidden");
+      document.getElementById("stage-2").classList.remove("hidden");
+    }
 
-    // Переход к языковому выбору
-    nextButton.addEventListener("click", () => {
-      registrationDiv.style.display = "none";
-      languageSelectionDiv.classList.add("visible");
-    });
+    function goToLanguageSelection() {
+      document.getElementById("stage-2").classList.add("hidden");
+      document.getElementById("stage-3").classList.remove("hidden");
+    }
 
-    // Обработка выбора языка
-    russianButton.addEventListener("click", () => {
-      languageSelectionDiv.classList.remove("visible");
-      sliderDiv.classList.add("visible");
+    function startSlides(language) {
+      document.getElementById("stage-3").classList.add("hidden");
+      document.getElementById("slides-container").classList.remove("hidden");
       updateSlide();
-    });
+    }
 
-    // Обновление слайда
     function updateSlide() {
-      if (currentSlide >= 0 && currentSlide < slides.length) {
-        slideImage.src = slides[currentSlide];
+      document.getElementById("slide-image").src = slides[currentSlide];
+    }
+
+    function prevSlide() {
+      if (currentSlide === 0) {
+        document.getElementById("slides-container").classList.add("hidden");
+        document.getElementById("stage-3").classList.remove("hidden");
+      } else {
+        currentSlide--;
+        updateSlide();
       }
     }
 
-    // Обработка кнопки "Вперёд"
-    nextSlideButton.addEventListener("click", () => {
+    function nextSlide() {
       if (currentSlide < slides.length - 1) {
         currentSlide++;
         updateSlide();
       }
-    });
+    }
 
-    // Обработка кнопки "Назад"
-    prevButton.addEventListener("click", () => {
-      if (currentSlide > 0) {
-        currentSlide--;
-        updateSlide();
-      } else {
-        sliderDiv.classList.remove("visible");
-        languageSelectionDiv.classList.add("visible");
-      }
+    function showInfo() {
+      document.getElementById("info-overlay").classList.remove("hidden");
+    }
+
+    document.getElementById("info-overlay").addEventListener("click", function() {
+      this.classList.add("hidden");
     });
   </script>
 </body>
