@@ -100,9 +100,13 @@
       text-align: center;
       width: 80%;
       height: 80%;
-      max-width: 1200px;  /* Увеличена максимальная ширина */
-      max-height: 800px;  /* Увеличена максимальная высота */
+      max-width: 1200px;
+      max-height: 800px;
       overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
     }
 
     .slide {
@@ -121,9 +125,27 @@
     .slide img {
       max-width: 100%;
       max-height: 100%;
-      object-fit: contain;  /* Подгонка содержимого под размер контейнера */
+      object-fit: contain;
     }
-    <link rel="stylesheet" href="styles.css">
+
+    /* Добавление кнопок "Назад" и "Вперед" */
+    .nav-buttons {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      z-index: 20;
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      padding: 0 20px;
+    }
+
+    .nav-buttons .button {
+      position: relative;
+      z-index: 30;
+    }
+
   </style>
 </head>
 <body>
@@ -178,8 +200,12 @@
       Ваш браузер не поддерживает воспроизведение видео.
     </video>
   </div>
-  <button class="button" id="prev-slide">Назад</button>
-  <button class="button" id="next-slide">Вперед</button>
+  
+  <!-- Кнопки для перехода между слайдами -->
+  <div class="nav-buttons">
+    <button class="button" id="prev-slide">Назад</button>
+    <button class="button" id="next-slide">Вперед</button>
+  </div>
 </div>
 
 <script>
