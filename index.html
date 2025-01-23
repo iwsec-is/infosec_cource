@@ -19,19 +19,6 @@
     }
 
     /* Главное окно */
-    .main-window {
-      position: relative;
-      width: 80%;
-      height: 70%;
-      background-color: #444;
-      border-radius: 15px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      overflow: hidden;
-    }
-
-    /* Окно ввода имени и фамилии */
     .centered-container {
       display: none;
       position: absolute;
@@ -86,34 +73,50 @@
       display: none;
     }
 
-    /* Окно для презентации */
-    .presentation-window {
+    /* Полупрозрачное окно с информацией */
+    .overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
       width: 100%;
-      height: 400px;
-      background-color: #333;
-      border-radius: 15px;
-      overflow: hidden;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.6);
+      z-index: 10;
     }
 
-    .presentation-content {
-      width: 90%;
-      height: 90%;
-      background-color: #444;
-      border-radius: 10px;
+    .info-box {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: #333;
       padding: 20px;
+      border-radius: 15px;
       color: white;
       text-align: center;
-      overflow: auto;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Окно презентации */
+    #presentation {
+      display: none;
+      width: 80%;
+      height: 70%;
+      background-color: #444;
+      border-radius: 15px;
+      overflow: hidden;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
     }
 
     .navigation-buttons {
       display: flex;
       justify-content: space-between;
-      width: 90%;
-      margin-top: 10px;
+      margin-top: 20px;
     }
 
     .navigation-buttons button {
@@ -150,6 +153,22 @@
     <img src="img/course_1.gif" alt="Выбор изображения">
   </div>
   <button class="button" id="start-button">Начать</button>
+  <button class="button" id="info-button">i</button>
+</div>
+
+<!-- Полупрозрачное окно с информацией -->
+<div class="overlay" id="info-overlay">
+  <div class="info-box">
+    <p>Course info</p>
+    <p>Intro</p>
+    <p>Information Data Security</p>
+    <p>Passwords</p>
+    <p>Cyber Security</p>
+    <p>Social Engineering</p>
+    <p>Office Security</p>
+    <p>Remote work</p>
+    <p>Incidents</p>
+  </div>
 </div>
 
 <!-- Окно выбора языка -->
@@ -159,19 +178,14 @@
 </div>
 
 <!-- Окно презентации -->
-<div class="main-window">
-  <div class="presentation-window">
-    <div class="presentation-content" id="presentation-content">
-      <!-- Сюда будет вставляться контент презентации -->
-      <h2>Презентация</h2>
-      <p>Здесь может быть ваш текст или мультимедийные материалы.</p>
-    </div>
-  </div>
-
-  <!-- Кнопки навигации -->
+<div id="presentation" class="centered-container">
+  <h2>Презентация</h2>
+  <p>Здесь будет ваш контент, текст или изображения для презентации.</p>
+  
+  <!-- Кнопки для перехода между слайдами -->
   <div class="navigation-buttons">
-    <button id="previous-button">Назад</button>
-    <button id="next-button">Вперед</button>
+    <button class="button" id="prev-slide">Назад</button>
+    <button class="button" id="next-slide">Вперед</button>
   </div>
 </div>
 
@@ -180,61 +194,81 @@
   const nameInput = document.getElementById('name-input');
   const imageSelection = document.getElementById('image-selection');
   const languageSelection = document.getElementById('language-selection');
-  const presentationWindow = document.querySelector('.presentation-window');
-  const previousButton = document.getElementById('previous-button');
-  const nextButton = document.getElementById('next-button');
-  
-  let currentSlide = 0;
+  const presentation = document.getElementById('presentation');
+  const infoOverlay = document.getElementById('info-overlay');
+
+  const continueButton = document.getElementById('continue-button');
+  const startButton = document.getElementById('start-button');
+  const infoButton = document.getElementById('info-button');
+  const russianButton = document.getElementById('russian-button');
+  const englishButton = document.getElementById('english-button');
+  const prevSlideButton = document.getElementById('prev-slide');
+  const nextSlideButton = document.getElementById('next-slide');
+
+  let currentSlideIndex = 0;
   const slides = [
-    "<h2>Слайд 1: Введение</h2><p>Здесь будет описание введения.</p>",
-    "<h2>Слайд 2: Информация о компании</h2><p>Здесь будет информация о компании.</p>",
-    "<h2>Слайд 3: Преимущества</h2><p>Здесь будет информация о преимуществах.</p>"
+    "<h2>Слайд 1</h2><p>Здесь будет описание слайда 1.</p>",
+    "<h2>Слайд 2</h2><p>Здесь будет описание слайда 2.</p>",
+    "<h2>Слайд 3</h2><p>Здесь будет описание слайда 3.</p>"
   ];
 
   // Показать следующее окно
-  document.getElementById('continue-button').addEventListener('click', () => {
+  continueButton.addEventListener('click', () => {
     nameInput.style.display = 'none';
     imageSelection.style.display = 'block';
   });
 
-  document.getElementById('start-button').addEventListener('click', () => {
+  startButton.addEventListener('click', () => {
     imageSelection.style.display = 'none';
     languageSelection.style.display = 'block';
   });
 
-  document.getElementById('russian-button').addEventListener('click', () => {
-    languageSelection.style.display = 'none';
-    presentationWindow.style.display = 'block';
-    showSlide(currentSlide);
+  infoButton.addEventListener('click', () => {
+    infoOverlay.style.display = 'block';
   });
 
-  document.getElementById('english-button').addEventListener('click', () => {
+  infoOverlay.addEventListener('click', () => {
+    infoOverlay.style.display = 'none';
+  });
+
+  russianButton.addEventListener('click', () => {
     languageSelection.style.display = 'none';
-    presentationWindow.style.display = 'block';
-    showSlide(currentSlide);
+    presentation.style.display = 'block';
+    showSlide(currentSlideIndex);
+  });
+
+  englishButton.addEventListener('click', () => {
+    languageSelection.style.display = 'none';
+    presentation.style.display = 'block';
+    showSlide(currentSlideIndex);
   });
 
   // Функция отображения слайда
   function showSlide(index) {
-    const content = document.getElementById('presentation-content');
-    content.innerHTML = slides[index];
+    presentation.innerHTML = slides[index];
+    presentation.innerHTML += `
+      <div class="navigation-buttons">
+        <button class="button" id="prev-slide">Назад</button>
+        <button class="button" id="next-slide">Вперед</button>
+      </div>
+    `;
+    addNavigationListeners();
   }
 
   // Кнопка "Назад"
-  previousButton.addEventListener('click', () => {
-    if (currentSlide > 0) {
-      currentSlide--;
-      showSlide(currentSlide);
-    }
+  prevSlideButton.addEventListener('click', () => {
+    currentSlideIndex = (currentSlideIndex - 1 + slides.length) % slides.length;
+    showSlide(currentSlideIndex);
   });
 
   // Кнопка "Вперед"
-  nextButton.addEventListener('click', () => {
-    if (currentSlide < slides.length - 1) {
-      currentSlide++;
-      showSlide(currentSlide);
-    }
+  nextSlideButton.addEventListener('click', () => {
+    currentSlideIndex = (currentSlideIndex + 1) % slides.length;
+    showSlide(currentSlideIndex);
   });
+
+  // Изначально показываем окно ввода
+  nameInput.style.display = 'block';
 </script>
 
 </body>
